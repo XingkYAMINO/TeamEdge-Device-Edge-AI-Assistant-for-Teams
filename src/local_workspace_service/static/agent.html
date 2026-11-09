@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>工作区问答</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="/static/agent.css">
+  <script src="/static/agent.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div><p class="eyebrow">LOCAL AGENT</p><h1>工作区问答</h1><p class="subtitle">本地检索与读取材料，云端模型生成带出处的回答。</p></div>
+    <nav class="header-links" aria-label="页面导航"><a class="docs-link" href="/">文件清单</a><a class="docs-link" href="/model-connections">模型连接设置</a><a class="docs-link" href="/docs">API 文档</a></nav>
+  </header>
+  <main>
+    <section class="card notice-card">
+      <strong>问题和必要的文档片段会发送给所选模型服务。</strong>
+      <p>每次问答独立执行；本页不提供长期记忆。任务和原文片段只在内存中限量保留，服务重启后消失。</p>
+    </section>
+    <div id="agent-message" class="page-message hidden" role="status" aria-live="polite"></div>
+    <section class="card">
+      <div class="section-heading"><div><p class="step">01</p><h2>选择范围与外发目的地</h2></div></div>
+      <div class="agent-grid">
+        <label><span>工作区</span><select id="agent-workspace"></select></label>
+        <div><span class="field-label">当前模型连接</span><p id="agent-connection">—</p></div>
+      </div>
+      <p id="agent-destination" class="path-text">—</p>
+      <button id="enable-cloud" class="secondary-button" type="button">明确启用此工作区的云端问答</button>
+      <p id="enable-status" class="form-help">更换工作区、连接版本或服务地址后需要重新启用。</p>
+    </section>
+    <section class="card">
+      <div class="section-heading"><div><p class="step">02</p><h2>提出问题</h2></div></div>
+      <label><span>与当前工作区材料有关的问题</span><textarea id="agent-question" maxlength="4000" rows="5" placeholder="例如：请总结会议记录中的待办事项。"></textarea></label>
+      <div class="form-actions"><button id="send-question" class="primary-button" type="button">发送问题</button></div>
+      <div id="task-status" class="task-status hidden"><strong id="task-status-title"></strong><ol id="task-events"></ol></div>
+    </section>
+    <section id="answer-card" class="card hidden">
+      <div class="section-heading"><div><p class="step">03</p><h2>回答与出处</h2></div></div>
+      <pre id="agent-answer" class="answer-text"></pre>
+      <div id="agent-citations" class="citation-list"></div>
+      <p class="form-help">引用校验只证明该片段确由本次任务的本地工具产生，不代表系统自动证明回答语义完全正确。</p>
+    </section>
+  </main>
+  <dialog id="source-dialog" class="source-dialog"><div><h2 id="source-title">回答时原文</h2><p id="source-meta"></p><pre id="source-text"></pre><button id="close-source" class="secondary-button" type="button">关闭</button></div></dialog>
+  <footer>只读工具 · 不提供文件修改、Shell 或任意网络访问</footer>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>模型连接设置</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="/static/model-connections.css">
+  <script src="/static/model-connections.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div>
+      <p class="eyebrow">LOCAL SETTINGS</p>
+      <h1>模型连接设置</h1>
+      <p class="subtitle">管理本机应用后续使用的模型连接信息。</p>
+    </div>
+    <nav class="header-links" aria-label="页面导航">
+      <a class="docs-link" href="/">文件清单</a>
+      <a class="docs-link" href="/agent">工作区问答</a>
+      <a class="docs-link" href="/docs">本地 API 文档</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="card notice-card">
+      <strong>保存配置不会自动连接模型。</strong>
+      <p>只有点击“测试普通对话”或“测试工具调用”才会向服务商发送固定测试内容，可能产生费用；测试不包含工作区材料。</p>
+      <p>普通对话通过不代表工具调用通过。测试结果仅保留在当前页面，修改配置后自动失效。</p>
+    </section>
+
+    <div id="page-message" class="page-message hidden" role="status" aria-live="polite"></div>
+
+    <section class="card" aria-labelledby="connections-heading">
+      <div class="section-heading">
+        <div>
+          <p class="step">01</p>
+          <h2 id="connections-heading">已保存配置</h2>
+        </div>
+        <button id="new-connection" class="primary-button" type="button">新增配置</button>
+      </div>
+      <p id="active-summary" class="active-summary">当前没有选择模型连接。</p>
+      <div id="connections-empty" class="empty-state hidden">
+        <strong>尚未保存模型连接配置</strong>
+        <p>点击“新增配置”记录协议、地址和模型名称。</p>
+      </div>
+      <div id="connections-list" class="connection-list"></div>
+    </section>
+
+    <section id="editor-card" class="card hidden" aria-labelledby="editor-heading">
+      <div class="section-heading">
+        <div>
+          <p class="step">02</p>
+          <h2 id="editor-heading">新增模型连接</h2>
+        </div>
+        <button id="cancel-editor" class="secondary-button" type="button">取消</button>
+      </div>
+
+      <form id="connection-form" novalidate>
+        <div class="form-grid">
+          <label>
+            <span>配置名称</span>
+            <input id="connection-name" name="name" maxlength="100" required autocomplete="off">
+          </label>
+          <label>
+            <span>接口协议</span>
+            <select id="connection-protocol" name="protocol" required>
+              <option value="openai_chat_completions">OpenAI兼容 Chat Completions</option>
+              <option value="openai_responses">OpenAI Responses</option>
+              <option value="anthropic_messages">Anthropic Messages</option>
+            </select>
+          </label>
+          <label class="wide-field">
+            <span>API 基础地址</span>
+            <input id="connection-base-url" name="base_url" type="url" maxlength="2048" placeholder="https://example.com/v1" required autocomplete="url">
+            <small>填写基础地址，包含服务要求的路径前缀和 /v1（如适用）。Chat Completions 与 Responses 示例为 https://api.openai.com/v1，分别追加 /chat/completions 与 /responses。Anthropic Messages 示例为 https://api.anthropic.com/v1，追加 /messages。</small>
+          </label>
+          <label>
+            <span>模型名称或标识</span>
+            <input id="connection-model" name="model" maxlength="200" required autocomplete="off">
+          </label>
+          <label>
+            <span>API Key（可选）</span>
+            <input id="connection-api-key" name="api_key" type="password" maxlength="1280" autocomplete="new-password">
+            <small id="key-status">未设置密钥。密钥只提交到系统凭据存储。</small>
+          </label>
+        </div>
+
+        <label id="clear-key-row" class="check-row hidden">
+          <input id="clear-api-key" name="clear_api_key" type="checkbox">
+          <span>清除已保存密钥</span>
+        </label>
+        <p class="form-help">编辑时，新密钥留空表示保留原密钥；勾选“清除已保存密钥”才会主动删除。</p>
+        <div id="form-error" class="form-error hidden" role="alert"></div>
+        <div class="form-actions">
+          <button id="save-connection" class="primary-button" type="submit">保存配置</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <dialog id="delete-dialog" class="delete-dialog">
+    <form method="dialog">
+      <h2>确认删除配置</h2>
+      <p id="delete-message"></p>
+      <p id="delete-active-warning" class="danger-text hidden">删除后将没有当前模型连接，需要重新选择。</p>
+      <div class="dialog-actions">
+        <button id="cancel-delete" class="secondary-button" value="cancel" type="button">取消</button>
+        <button id="confirm-delete" class="danger-button" value="confirm" type="button">确认删除</button>
+      </div>
+    </form>
+  </dialog>
+
+  <footer>模型连接配置属于本机应用，不绑定工作区 · 本页面不会发起模型请求</footer>
+</body>
+</html>

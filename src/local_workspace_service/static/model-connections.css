@@ -1,0 +1,36 @@
+.notice-card { border-left: 5px solid var(--accent); }
+.notice-card strong { display: block; margin-bottom: 7px; }
+.notice-card p { margin-bottom: 0; color: var(--muted); }
+.page-message { width: 100%; border-radius: 10px; padding: 12px 14px; background: var(--accent-soft); color: var(--accent-dark); }
+.page-message.error { background: var(--danger-soft); color: var(--danger); }
+.active-summary { color: var(--muted); margin-bottom: 18px; }
+.connection-list { display: grid; gap: 12px; }
+.connection-item { display: grid; grid-template-columns: minmax(180px, 1.1fr) minmax(220px, 2fr) auto; gap: 18px; align-items: center; border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.connection-title { display: flex; align-items: center; gap: 9px; margin-bottom: 6px; }
+.connection-title strong { overflow-wrap: anywhere; }
+.active-badge { border-radius: 99px; padding: 3px 8px; background: var(--accent-soft); color: var(--accent-dark); font-size: 0.72rem; font-weight: 800; white-space: nowrap; }
+.connection-meta { color: var(--muted); font-size: 0.84rem; overflow-wrap: anywhere; }
+.connection-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.secondary-button, .danger-button { border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink); padding: 8px 11px; cursor: pointer; font-weight: 700; }
+.danger-button { border-color: #e4b4b0; color: var(--danger); }
+.secondary-button:disabled, .danger-button:disabled { opacity: 0.5; cursor: not-allowed; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.form-grid label > span { display: block; margin-bottom: 7px; color: var(--muted); font-size: 0.82rem; font-weight: 700; }
+.form-grid input, .form-grid select { width: 100%; border: 1px solid var(--line); border-radius: 9px; background: #fff; color: var(--ink); padding: 10px 12px; }
+.form-grid small { display: block; margin-top: 6px; color: var(--muted); }
+.wide-field { grid-column: span 2; }
+.check-row { display: flex; align-items: center; gap: 9px; margin-top: 18px; }
+.form-help { color: var(--muted); font-size: 0.86rem; }
+.form-error { margin: 14px 0; padding: 11px 13px; border-radius: 9px; background: var(--danger-soft); color: var(--danger); }
+.form-actions { display: flex; justify-content: flex-end; }
+.delete-dialog { width: min(480px, calc(100% - 32px)); border: 0; border-radius: 14px; padding: 24px; box-shadow: var(--shadow); }
+.delete-dialog::backdrop { background: rgba(13, 29, 20, 0.4); }
+.dialog-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
+.danger-text { color: var(--danger); font-weight: 700; }
+
+@media (max-width: 760px) {
+  .connection-item { grid-template-columns: 1fr; }
+  .connection-actions { justify-content: flex-start; }
+  .form-grid { grid-template-columns: 1fr; }
+  .wide-field { grid-column: auto; }
+}

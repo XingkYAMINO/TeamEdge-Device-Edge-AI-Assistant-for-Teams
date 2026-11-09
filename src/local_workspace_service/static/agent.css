@@ -1,0 +1,10 @@
+.agent-grid { display:grid; grid-template-columns:minmax(240px, 1fr) minmax(240px, 1fr); gap:1rem; }
+.field-label { display:block; font-weight:700; margin-bottom:.45rem; }
+textarea { width:100%; box-sizing:border-box; resize:vertical; border:1px solid var(--line, #cbd5e1); border-radius:.6rem; padding:.8rem; font:inherit; }
+.task-status { margin-top:1rem; padding:1rem; border-radius:.65rem; background:#f8fafc; }
+.task-status ol { margin:.65rem 0 0; padding-left:1.3rem; }
+.answer-text, .source-dialog pre { white-space:pre-wrap; overflow-wrap:anywhere; font:inherit; line-height:1.65; background:#f8fafc; padding:1rem; border-radius:.65rem; }
+.citation-list { display:flex; flex-wrap:wrap; gap:.6rem; margin-top:1rem; }
+.source-dialog { max-width:min(760px, 90vw); border:0; border-radius:.8rem; padding:1.4rem; }
+.source-dialog::backdrop { background:rgba(15,23,42,.5); }
+@media (max-width:700px) { .agent-grid { grid-template-columns:1fr; } }

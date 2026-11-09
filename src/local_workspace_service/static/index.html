@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>本地工作区文件清单</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div>
+      <p class="eyebrow">LOCAL WORKSPACE</p>
+      <h1>本地工作区文件清单</h1>
+      <p class="subtitle">查看上次扫描保存的文件元数据；此页面不会读取文件正文。</p>
+    </div>
+    <nav class="header-links" aria-label="页面导航">
+      <a class="docs-link" href="/model-connections">模型连接设置</a>
+      <a class="docs-link" href="/docs">本地 API 文档</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="card workspace-panel" aria-labelledby="workspace-heading">
+      <div class="section-heading">
+        <div>
+          <p class="step">01</p>
+          <h2 id="workspace-heading">选择工作区</h2>
+        </div>
+        <button id="scan-button" class="primary-button" type="button" disabled>重新扫描</button>
+      </div>
+
+      <form id="workspace-create-form" class="workspace-create-form">
+        <label for="workspace-root-input">文件夹绝对路径</label>
+        <input id="workspace-root-input" type="text" required maxlength="4096" placeholder="例如：D:\项目资料" autocomplete="off" spellcheck="false">
+        <label for="workspace-name-input">工作区名称（可选，默认使用文件夹名称）</label>
+        <input id="workspace-name-input" type="text" maxlength="100" autocomplete="off">
+        <p class="snapshot-note">将已有文件夹设为工作区，默认允许 Markdown（.md）和 Word（.docx）。不会移动文件或读取正文。</p>
+        <button id="create-workspace-button" class="primary-button" type="submit">设为工作区</button>
+        <p id="workspace-create-message" class="hidden" role="status" aria-live="polite"></p>
+      </form>
+
+      <div id="no-workspaces" class="empty-state hidden">
+        <strong>还没有已注册的工作区</strong>
+        <p>在上方输入已有文件夹的绝对路径，点击“设为工作区”即可开始。</p>
+      </div>
+
+      <div id="workspace-content" class="hidden">
+        <label class="field-label" for="workspace-select">已注册工作区</label>
+        <select id="workspace-select"></select>
+
+        <dl class="workspace-details">
+          <div><dt>名称</dt><dd id="workspace-name">—</dd></div>
+          <div><dt>根目录</dt><dd id="workspace-root" class="path-text">—</dd></div>
+          <div><dt>允许类型</dt><dd id="workspace-extensions">—</dd></div>
+          <div><dt>最近成功扫描</dt><dd id="last-scan-time">—</dd></div>
+          <div><dt>更新状态</dt><dd id="update-status">—</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section id="results-section" class="card hidden" aria-labelledby="results-heading">
+      <div class="section-heading results-heading">
+        <div>
+          <p class="step">02</p>
+          <h2 id="results-heading">最近一次文件清单</h2>
+        </div>
+        <p id="timezone-note" class="timezone-note"></p>
+      </div>
+
+      <p class="snapshot-note">此清单反映上次扫描时的情况，本地文件变化后请重新扫描。</p>
+      <div id="alerts" class="alerts" aria-live="polite"></div>
+
+      <div id="summary" class="summary-grid">
+        <div><span id="included-count">0</span><small>已收录文件</small></div>
+        <div><span id="excluded-count">0</span><small>已排除条目</small></div>
+        <div><span id="error-count">0</span><small>扫描错误</small></div>
+        <div><span id="visited-count">0</span><small>已遍历条目</small></div>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="扫描结果分类">
+        <button class="tab active" role="tab" aria-selected="true" data-tab="included" type="button">已收录</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="excluded" type="button">已排除</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="errors" type="button">扫描错误</button>
+      </div>
+
+      <section id="included-panel" class="tab-panel" role="tabpanel">
+        <div class="toolbar">
+          <label class="search-field">
+            <span>按文件名或路径筛选</span>
+            <input id="file-filter" type="search" placeholder="例如：会议记录 或 notes/" autocomplete="off">
+          </label>
+          <label>
+            <span>排序字段</span>
+            <select id="sort-key">
+              <option value="path">相对路径（扫描器默认）</option>
+              <option value="modified">最后修改时间</option>
+              <option value="size">文件大小</option>
+            </select>
+          </label>
+          <label>
+            <span>排序方向</span>
+            <select id="sort-direction">
+              <option value="asc">升序</option>
+              <option value="desc">降序</option>
+            </select>
+          </label>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>文件名</th><th>相对路径</th><th>最后修改时间</th><th>文件大小</th><th>处理状态</th></tr></thead>
+            <tbody id="included-body"></tbody>
+          </table>
+        </div>
+        <div id="included-empty" class="table-empty hidden"></div>
+        <div id="included-pagination" class="pagination"></div>
+      </section>
+
+      <section id="excluded-panel" class="tab-panel hidden" role="tabpanel">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>相对路径</th><th>条目类型</th><th>最后修改时间</th><th>大小</th><th>中文原因</th></tr></thead>
+            <tbody id="excluded-body"></tbody>
+          </table>
+        </div>
+        <div id="excluded-empty" class="table-empty hidden"></div>
+        <div id="excluded-pagination" class="pagination"></div>
+      </section>
+
+      <section id="errors-panel" class="tab-panel hidden" role="tabpanel">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>相对路径</th><th>条目类型</th><th>最后修改时间</th><th>大小</th><th>中文原因</th></tr></thead>
+            <tbody id="errors-body"></tbody>
+          </table>
+        </div>
+        <div id="errors-empty" class="table-empty hidden"></div>
+        <div id="errors-pagination" class="pagination"></div>
+      </section>
+    </section>
+  </main>
+
+  <footer>仅在本机回环地址提供服务 · 文件正文从未在此页面中读取</footer>
+</body>
+</html>

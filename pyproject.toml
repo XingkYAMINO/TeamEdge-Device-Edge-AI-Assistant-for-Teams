@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "local-workspace-service"
+version = "0.1.0"
+description = "A local workspace scanner and document Q&A service for configured model APIs."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115,<1.0",
+    "httpx>=0.27,<1.0",
+    "pydantic>=2.9,<3.0",
+    "uvicorn[standard]>=0.30,<1.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "httpx>=0.27,<1.0",
+    "pytest>=8.3,<10.0",
+]
+
+[project.scripts]
+local-workspace-service = "local_workspace_service.__main__:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/local_workspace_service"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/local_workspace_service/static" = "local_workspace_service/static"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
